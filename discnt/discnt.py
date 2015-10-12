@@ -39,7 +39,7 @@ def main():
     actual_disc_num = len(prices) / allowed_disc_num
     res = sum(prices[:-actual_disc_num]) + sum(
         [i * (100 - disc)/100. for i in prices[-actual_disc_num:]])
-    write_file(output_file, str(res))
+    write_file(output_file, "{0:.2f}".format(res))
 
 
 if __name__ == '__main__':
