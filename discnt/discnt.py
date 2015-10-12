@@ -32,8 +32,8 @@ def sorting(array):
 
 def main():
     allowed_disc_num = 3
-    input_file = 'dscnt.in'
-    output_file = 'dscnt.out'
+    input_file = 'discnt.in'
+    output_file = 'discnt.out'
     prices, disc = read_file(input_file)
     sorting(prices)
     actual_disc_num = len(prices) / allowed_disc_num
