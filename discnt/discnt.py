@@ -38,8 +38,11 @@ def main():
     print prices, disc
     sorting(prices)
     actual_disc_num = len(prices) / allowed_disc_num
-    res = sum(prices[:-actual_disc_num]) + sum(
-        [i * (100 - disc)/100. for i in prices[-actual_disc_num:]])
+    if actual_disc_num > 0:
+        res = sum(prices[:-actual_disc_num]) + sum(
+            [i * (100 - disc)/100. for i in prices[-actual_disc_num:]])
+    else:
+        res = sum([prices])
     write_file(output_file, "{0:.2f}".format(res))
 
 
