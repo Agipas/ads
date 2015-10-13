@@ -35,6 +35,7 @@ def main():
     input_file = 'discnt.in'
     output_file = 'discnt.out'
     prices, disc = read_file(input_file)
+    print prices, disc
     sorting(prices)
     actual_disc_num = len(prices) / allowed_disc_num
     res = sum(prices[:-actual_disc_num]) + sum(
