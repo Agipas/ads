@@ -111,4 +111,4 @@ def merge2(xs, ys):
 if __name__ == '__main__':
     bud, arr = read_values('hamstr.in')
     res = maximizer(bud, merge_sort(arr))
-    write_result('hamstr.out', res)
+    write_result('hamstr.out', '{0}'.format(res))
