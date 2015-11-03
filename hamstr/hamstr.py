@@ -42,6 +42,7 @@ def read_values(path):
             h, g = int(h), int(g)
             array.append(Homyak(h, g))
             line += 1
+        print budget, array
         return budget, array
 
 
@@ -68,6 +69,7 @@ def maximizer(budget, sorted_array):
         count += 1
         remainder -= el.sum
     if count == 0:
+        # count = [1 for el in sorted_array if budget >= el.h].pop()
         for el in sorted_array:
             if budget >= el.h:
                 count = 1
