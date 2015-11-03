@@ -22,6 +22,7 @@ def searcher(sorted_array):
     results = list()
     max_i = len(sorted_array) - 1
     j = 0
+    jokers_left = jokers
     while j < max_i:
         i = j
         count = 1

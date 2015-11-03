@@ -44,7 +44,7 @@ def read_values(path):
             h, g = int(h), int(g)
             array.append(Homyak(h, g))
             line += 1
-        print budget, array
+        print budget, sorted(array)
         return budget, array
 
 
