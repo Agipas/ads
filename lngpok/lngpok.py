@@ -7,6 +7,7 @@ def read_value(path):
     ar = []
     for el in data.split():
         insort(ar, int(el))
+    print ar
     return ar
 
 
@@ -39,7 +40,10 @@ def searcher(sorted_array):
             j += 1
         j = i + 1
         results.append(count)
-    return max(results) + jokers_left
+    count = 0
+    if results:
+        count = max(results)
+    return count + jokers_left
 
 
 if __name__ == '__main__':
