@@ -5,6 +5,7 @@ Created on Tue Nov  3 16:34:32 2015
 @author: vwvolodya
 """
 
+
 class Homyak(object):
     def __init__(self, h, g):
         self.h = h
@@ -12,7 +13,7 @@ class Homyak(object):
 
     def __cmp__(self, other):
         assert isinstance(other, Homyak)
-        current_sum = self.g+ self.h
+        current_sum = self.g + self.h
         other_sum = other.g + other.h
         if current_sum < other_sum:
             return -1
@@ -20,16 +21,17 @@ class Homyak(object):
             return 0
         else:
             return 1
-    
+
     def __str__(self):
         return 'Homyak -- g: {0}, h: {1}'.format(self.g, self.h)
-        
+
     def __repr__(self):
-        return 'Sum: {0}'.format(self.h + self.g)
-    
-    @property    
+        return str(self) + ' Sum: {0}'.format(self.h + self.g)
+
+    @property
     def sum(self):
         return self.g + self.h
+
 
 def read_values(path):
     with open(path) as f:
@@ -50,15 +52,17 @@ def write_result(path, result):
     with open(path, 'w') as f:
         f.write(result)
 
+
 def _randoms():
     ar = []
     import random as r
     i = 10
     while i > 0:
-        ar.append(Homyak(r.randint(1,100), r.randint(2,100)))
+        ar.append(Homyak(r.randint(1, 100), r.randint(2, 100)))
         i -= 1
     print ar
     print sorted(ar)
+
 
 def maximizer(budget, sorted_array):
     count = 0
@@ -77,6 +81,7 @@ def maximizer(budget, sorted_array):
                 break
     return count
 
+
 def merge_sort(lst):
     if not lst:
         return []
@@ -85,13 +90,15 @@ def merge_sort(lst):
         lists = merge_lists(lists)
     return lists[0]
 
+
 def merge_lists(lists):
     result = []
     for i in range(0, len(lists) // 2):
-        result.append(merge2(lists[i*2], lists[i*2 + 1]))
+        result.append(merge2(lists[i * 2], lists[i * 2 + 1]))
     if len(lists) % 2:
         result.append(lists[-1])
     return result
+
 
 def merge2(xs, ys):
     i = 0
@@ -109,6 +116,7 @@ def merge2(xs, ys):
     result.extend(xs[i:])
     result.extend(ys[j:])
     return result
+
 
 if __name__ == '__main__':
     bud, arr = read_values('hamstr.in')
