@@ -25,10 +25,13 @@ def searcher(sorted_array):
         i = j
         count = 1
         jokers_i = jokers
+        jokers_left = jokers
         while i <= max_i - 1:
             if sorted_array[i] + 1 != sorted_array[i + 1]:
                 if not jokers_i:
                     break
+                if sorted_array[i] == sorted_array[i + 1]:
+                    jokers_left -= 1
                 jokers_i -= 1
             i += 1
             count += 1
@@ -36,7 +39,7 @@ def searcher(sorted_array):
             j += 1
         j = i + 1
         results.append(count)
-    return max(results) + jokers
+    return max(results) + jokers_left
 
 
 if __name__ == '__main__':
