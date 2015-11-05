@@ -1,5 +1,3 @@
-from bisect import insort
-
 
 def searcher(sorted_array):
     jokers = sum((1 for el in sorted_array if el == 0))
@@ -86,6 +84,7 @@ def enhanced_searcher(array):
     array = merge_sort(array)
     if jokers:
         array = array[1:]
+    print jokers
     print sorted(array, reverse=True)
     results = [jokers]
     if not array:
