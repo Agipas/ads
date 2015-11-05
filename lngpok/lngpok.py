@@ -126,7 +126,7 @@ def enhanced_searcher(array):
 
 
 if __name__ == '__main__':
-    arr = read_value('data3.txt')
+    arr = read_value('lngpok.in')
     res = enhanced_searcher(arr)
     write_value('lngpok.out', res)
     print res
