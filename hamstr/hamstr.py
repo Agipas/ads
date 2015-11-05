@@ -13,8 +13,8 @@ class Homyak(object):
 
     def __cmp__(self, other):
         assert isinstance(other, Homyak)
-        current_sum = self.g + self.h
-        other_sum = other.g + other.h
+        current_sum = 2 * self.g + self.h
+        other_sum = 2 * other.g + other.h
         if current_sum < other_sum:
             return -1
         elif current_sum == other_sum:
@@ -26,11 +26,18 @@ class Homyak(object):
         return 'Homyak -- g: {0}, h: {1}'.format(self.g, self.h)
 
     def __repr__(self):
-        return str(self) + ' Sum: {0}'.format(self.h + self.g)
+        return str(self) + ' Sum: {0}'.format(self.h + 2 * self.g)
 
     @property
     def sum(self):
         return self.g + self.h
+
+
+class HomeForHomyaks(list):
+
+    def get_sum(self):
+        l = len(self)
+        return sum(((l - 1) * el.g + el.h) for el in self)
 
 
 def read_values(path):
@@ -38,7 +45,7 @@ def read_values(path):
         budget = int(f.readline())
         num_homyak = int(f.readline())
         line = 0
-        array = []
+        array = HomeForHomyaks()
         while line < num_homyak:
             h, g = f.readline().split()
             h, g = int(h), int(g)
@@ -82,6 +89,16 @@ def maximizer(budget, sorted_array):
     return count
 
 
+def maxim(budget, sorted_array):
+    result = HomeForHomyaks()
+    for el in sorted_array:
+        result.append(el)
+        if result.get_sum() > budget and result:
+            result.pop()
+            break
+    return len(result)
+
+
 def merge_sort(lst):
     if not lst:
         return []
@@ -119,6 +136,8 @@ def merge2(xs, ys):
 
 
 if __name__ == '__main__':
-    bud, arr = read_values('hamstr.in')
-    res = maximizer(bud, merge_sort(arr))
+    bud, arr = read_values('data2.txt')
+    # res = maximizer(bud, merge_sort(arr))
+    res = maxim(bud, merge_sort(arr))
     write_result('hamstr.out', '{0}'.format(res))
+    print res
