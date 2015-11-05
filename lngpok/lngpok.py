@@ -72,8 +72,6 @@ def read_value(path):
     with open(path) as f:
         data = f.readline()
     ar = [int(i) for i in data.split()]
-    if ar:
-        print ar[-1]
     return ar
 
 
@@ -84,11 +82,11 @@ def write_value(path, result):
 
 def enhanced_searcher(array):
     jokers = sum((1 for el in array if el == 0))
-    array = merge_sort(array)
-    array = array[jokers:]
     array = list(set(array))
     array = merge_sort(array)
-    print array
+    if jokers:
+        array = array[1:]
+    print sorted(array, reverse=True)
     results = [jokers]
     if not array:
         return jokers
@@ -133,3 +131,4 @@ if __name__ == '__main__':
     arr = read_value('lngpok.in')
     res = enhanced_searcher(arr)
     write_value('lngpok.out', res)
+    print res
