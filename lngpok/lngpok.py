@@ -80,10 +80,8 @@ def write_value(path, result):
 
 def enhanced_searcher(array):
     jokers = sum((1 for el in array if el == 0))
-    array = list(set(array))
     array = merge_sort(array)
-    if jokers:
-        array = array[1:]
+    array = array[jokers:]
     print jokers
     print sorted(array, reverse=True)
     results = [jokers]
@@ -104,9 +102,10 @@ def enhanced_searcher(array):
                 count += 1
             elif diff == -1:
                 i += 1
-                count += jokers_left
-                jokers_left = 0
-                break
+                # count += jokers_left
+                # jokers_left = 0
+                # break
+                continue
             elif diff > jokers_left:
                 count += jokers_left
                 jokers_left = 0
@@ -127,7 +126,7 @@ def enhanced_searcher(array):
 
 
 if __name__ == '__main__':
-    arr = read_value('lngpok.in')
+    arr = read_value('data3.txt')
     res = enhanced_searcher(arr)
     write_value('lngpok.out', res)
     print res
