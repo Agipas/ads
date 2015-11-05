@@ -32,13 +32,48 @@ def searcher(sorted_array):
     return count + jokers_left
 
 
+def merge_sort(lst):
+    if not lst:
+        return []
+    lists = [[x] for x in lst]
+    while len(lists) > 1:
+        lists = merge_lists(lists)
+    return lists[0]
+
+
+def merge_lists(lists):
+    result = []
+    for i in range(0, len(lists) // 2):
+        result.append(merge2(lists[i * 2], lists[i * 2 + 1]))
+    if len(lists) % 2:
+        result.append(lists[-1])
+    return result
+
+
+def merge2(xs, ys):
+    i = 0
+    j = 0
+    result = []
+    while i < len(xs) and j < len(ys):
+        x = xs[i]
+        y = ys[j]
+        if x > y:
+            result.append(y)
+            j += 1
+        else:
+            result.append(x)
+            i += 1
+    result.extend(xs[i:])
+    result.extend(ys[j:])
+    return result
+
+
 def read_value(path):
     with open(path) as f:
         data = f.readline()
-    ar = []
-    for el in data.split():
-        insort(ar, int(el))
-    print ar
+    ar = [int(i) for i in data.split()]
+    if ar:
+        print ar[-1]
     return ar
 
 
@@ -49,7 +84,11 @@ def write_value(path, result):
 
 def enhanced_searcher(array):
     jokers = sum((1 for el in array if el == 0))
+    array = merge_sort(array)
     array = array[jokers:]
+    array = list(set(array))
+    array = merge_sort(array)
+    print array
     results = [jokers]
     if not array:
         return jokers
