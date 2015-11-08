@@ -82,14 +82,13 @@ def enhanced_searcher(array, reverse=False):
     jokers = sum((1 for el in array if el == 0))
     array.sort() if not reverse else array.sort(reverse=True)
     array = array[jokers:] if not reverse else array[:-jokers]
-    print jokers
-    print array
     results = [jokers]
     if not array:
         return jokers
     if len(array) == 1:
         return jokers + 1
-    minus_quantity = 1 if not reverse else -1
+    ascending = -2 if reverse else 0
+    equal = 1 if reverse else -1
     j = 0
     max_len = len(array) - 1
     while j < max_len:
@@ -97,10 +96,10 @@ def enhanced_searcher(array, reverse=False):
         count = 1
         jokers_left = jokers
         while i < max_len:
-            diff = array[i + 1] - array[i] - minus_quantity
-            if diff == 0:
+            diff = array[i + 1] - array[i] - 1
+            if diff == ascending:
                 count += 1
-            elif diff == -1 or diff == 1:
+            elif diff == equal:
                 i += 1
                 # count += jokers_left
                 # jokers_left = 0
@@ -117,16 +116,52 @@ def enhanced_searcher(array, reverse=False):
         if diff > jokers:   # there is no bug since array here is at least 2 elements long
             j = i + 1
         else:
-            j = i
+            j += 1
         if jokers_left:
             count += jokers_left
         results.append(count)
     return max(results)
 
 
+def silly_searcher(array):
+    jokers = sum((1 for el in array if el == 0))
+    array.sort()
+    array = array[jokers:]
+    results = [jokers]
+    if not array:
+        return jokers
+    if len(array) == 1:
+        return jokers + 1
+    j = 0
+    max_len = len(array) - 1
+    while j < max_len:
+        i = j
+        count = 1
+        jokers_left = jokers
+        while i < max_len:
+            diff = array[i + 1] - array[i] - 1
+            if diff == 0:   # magic number 1
+                count += 1
+            elif diff == -1: # magic number 2
+                i += 1
+                continue
+            elif diff > jokers_left:
+                count += jokers_left
+                jokers_left = 0
+                break
+            else:
+                jokers_left -= diff
+                count += diff + 1
+            i += 1
+        j += 1
+        if jokers_left:
+            count += jokers_left
+        results.append(count)
+    return max(results)
+
 if __name__ == '__main__':
-    arr = read_value('lngpok.in')
+    arr = read_value('15.in')
     res_1 = enhanced_searcher(arr)
-    res_2 = enhanced_searcher(arr, reverse=True)
-    write_value('lngpok.out', max(res_1, res_2))
-    print max(res_1, res_2)
+    # res_2 = silly_searcher(arr)
+    write_value('lngpok.out', res_1)
+    print res_1
