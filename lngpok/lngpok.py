@@ -125,7 +125,7 @@ def enhanced_searcher(array, reverse=False):
 
 
 if __name__ == '__main__':
-    arr = read_value('data1.txt')
+    arr = read_value('lngpok.in')
     res_1 = enhanced_searcher(arr)
     res_2 = enhanced_searcher(arr, reverse=True)
     write_value('lngpok.out', max(res_1, res_2))
