@@ -78,18 +78,18 @@ def write_value(path, result):
         f.write(str(result))
 
 
-def enhanced_searcher(array):
+def enhanced_searcher(array, reverse=False):
     jokers = sum((1 for el in array if el == 0))
-    array = merge_sort(array)
-    array = array[jokers:]
+    array.sort() if not reverse else array.sort(reverse=True)
+    array = array[jokers:] if not reverse else array[:-jokers]
     print jokers
-    print sorted(array, reverse=True)
+    print array
     results = [jokers]
     if not array:
         return jokers
     if len(array) == 1:
         return jokers + 1
-
+    minus_quantity = 1 if not reverse else -1
     j = 0
     max_len = len(array) - 1
     while j < max_len:
@@ -97,10 +97,10 @@ def enhanced_searcher(array):
         count = 1
         jokers_left = jokers
         while i < max_len:
-            diff = array[i + 1] - array[i] - 1
+            diff = array[i + 1] - array[i] - minus_quantity
             if diff == 0:
                 count += 1
-            elif diff == -1:
+            elif diff == -1 or diff == 1:
                 i += 1
                 # count += jokers_left
                 # jokers_left = 0
@@ -121,12 +121,12 @@ def enhanced_searcher(array):
         if jokers_left:
             count += jokers_left
         results.append(count)
-
     return max(results)
 
 
 if __name__ == '__main__':
-    arr = read_value('lngpok.in')
-    res = enhanced_searcher(arr)
-    write_value('lngpok.out', res)
-    print res
+    arr = read_value('data1.txt')
+    res_1 = enhanced_searcher(arr)
+    res_2 = enhanced_searcher(arr, reverse=True)
+    write_value('lngpok.out', max(res_1, res_2))
+    print max(res_1, res_2)
