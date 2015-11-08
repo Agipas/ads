@@ -11,33 +11,24 @@ class Homyak(object):
         self.h = h
         self.g = g
 
-    def __cmp__(self, other):
-        assert isinstance(other, Homyak)
-        current_sum = 2 * self.g + self.h
-        other_sum = 2 * other.g + other.h
-        if current_sum < other_sum:
-            return -1
-        elif current_sum == other_sum:
-            return 0
-        else:
-            return 1
-
     def __str__(self):
-        return 'Homyak -- g: {0}, h: {1}'.format(self.g, self.h)
+        return 'g: {0}, h: {1}'.format(self.g, self.h)
 
     def __repr__(self):
-        return str(self) + ' Sum: {0}'.format(self.h + 2 * self.g)
+        return str(self) + ' ##Sum: {0}##'.format(self.h + 1 * self.g)
 
-    @property
-    def sum(self):
-        return self.g + self.h
+    def sum(self, n):
+        return (n - 1) * self.g + self.h
 
 
 class HomeForHomyaks(list):
-
     def get_sum(self):
         l = len(self)
         return sum(((l - 1) * el.g + el.h) for el in self)
+
+    def custom_sort(self, n):
+        l = n - 1
+        self.sort(key=lambda el: l * el.g + el.h)
 
 
 def read_values(path):
@@ -51,24 +42,13 @@ def read_values(path):
             h, g = int(h), int(g)
             array.append(Homyak(h, g))
             line += 1
-        print budget, sorted(array)
+        print budget
         return budget, array
 
 
 def write_result(path, result):
     with open(path, 'w') as f:
         f.write(result)
-
-
-def _randoms():
-    ar = []
-    import random as r
-    i = 10
-    while i > 0:
-        ar.append(Homyak(r.randint(1, 100), r.randint(2, 100)))
-        i -= 1
-    print ar
-    print sorted(ar)
 
 
 def maximizer(budget, sorted_array):
@@ -89,55 +69,41 @@ def maximizer(budget, sorted_array):
     return count
 
 
-def maxim(budget, sorted_array):
-    result = HomeForHomyaks()
-    for el in sorted_array:
-        result.append(el)
-        if result.get_sum() > budget and result:
-            result.pop()
-            break
-    return len(result)
+def maxim(budget, array):
+    result = list()
+    print len(array)
 
-
-def merge_sort(lst):
-    if not lst:
-        return []
-    lists = [[x] for x in lst]
-    while len(lists) > 1:
-        lists = merge_lists(lists)
-    return lists[0]
-
-
-def merge_lists(lists):
-    result = []
-    for i in range(0, len(lists) // 2):
-        result.append(merge2(lists[i * 2], lists[i * 2 + 1]))
-    if len(lists) % 2:
-        result.append(lists[-1])
-    return result
-
-
-def merge2(xs, ys):
-    i = 0
-    j = 0
-    result = []
-    while i < len(xs) and j < len(ys):
-        x = xs[i]
-        y = ys[j]
-        if x > y:
-            result.append(y)
-            j += 1
+    for i in xrange(1, len(array) + 1):
+        count = 0
+        remainder = budget
+        # print i
+        array.custom_sort(i)
+        # print array
+        for j, el in enumerate(array):
+            current_cost = el.sum(i)
+            if current_cost > remainder or j > i - 1:
+                break
+            count += 1
+            remainder -= current_cost
+        if result:
+            if count > result[-1]:
+                result.append(count)
+            else:
+                print result
+                break
         else:
-            result.append(x)
-            i += 1
-    result.extend(xs[i:])
-    result.extend(ys[j:])
-    return result
+            result.append(count)
+    # print result
+    return max(result)
 
 
 if __name__ == '__main__':
-    bud, arr = read_values('hamstr.in')
+    from datetime import datetime
+    start = datetime.now()
+    bud, arr = read_values('12.in')
+    # bud, arr = read_values('data3.txt')
     # res = maximizer(bud, merge_sort(arr))
-    res = maxim(bud, merge_sort(arr))
+    res = maxim(bud, arr)
     write_result('hamstr.out', '{0}'.format(res))
     print res
+    print (datetime.now() - start).total_seconds()
