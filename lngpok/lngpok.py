@@ -160,7 +160,7 @@ def silly_searcher(array):
     return max(results)
 
 if __name__ == '__main__':
-    arr = read_value('15.in')
+    arr = read_value('lngpok.in')
     res_1 = enhanced_searcher(arr)
     # res_2 = silly_searcher(arr)
     write_value('lngpok.out', res_1)
