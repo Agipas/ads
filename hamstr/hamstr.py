@@ -42,7 +42,6 @@ def read_values(path):
             h, g = int(h), int(g)
             array.append(Homyak(h, g))
             line += 1
-        print budget
         return budget, array
 
 
@@ -80,7 +79,6 @@ def maxim(budget, array):
         for j, el in enumerate(array):
             current_cost = el.sum(i)
             if current_cost > remainder or j > i - 1:
-                print 'yeh'
                 break
             count += 1
             remainder -= current_cost
@@ -97,40 +95,36 @@ def maxim(budget, array):
 
 def maxim_log(budget, array):
     result = list()
-    print len(array)
-
+    count = 0
     left = 0
-    right = len(array)
+    right = len(array) - 1
     while left < right:
         i = (left + right) / 2
-        count = 0
         remainder = budget
         array.custom_sort(i)
-        for j, el in enumerate(array):
-            current_cost = el.sum(i)
-            if current_cost > remainder or j > i:
-                print 'yeh'
-                break
-            count += 1
-            remainder -= current_cost
-        if result:
-            if count > result[-1]:
-                result.append(count)
-                left = i
-            else:
-                right = i
+        current_cost = sum((el.sum(i) for el in array[:i]))
+        if current_cost > remainder:
+            right = i
         else:
-            result.append(count)
-    return max(result)
+            if result and result[-1] == i:
+                    break
+            result.append(i)
+            left = i
+    if result:
+        count = result[-1]
+    else:
+        for el in array:
+            if budget >= el.h:
+                count = 1
+            else:
+                break
+    return count
 
 
 if __name__ == '__main__':
     from datetime import datetime
     start = datetime.now()
     bud, arr = read_values('hamstr.in')
-    # bud, arr = read_values('data.txt')
-    # res = maximizer(bud, merge_sort(arr))
     res = maxim_log(bud, arr)
     write_result('hamstr.out', '{0}'.format(res))
-    print res
     print (datetime.now() - start).total_seconds()
