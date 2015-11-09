@@ -86,7 +86,6 @@ def maxim(budget, array):
             if count > result[-1]:
                 result.append(count)
             else:
-                print result
                 break
         else:
             result.append(count)
@@ -98,6 +97,8 @@ def maxim_log(budget, array):
     count = 0
     left = 0
     right = len(array) - 1
+    if right < 1000:    # silly heuristic
+        return maxim(budget, array)
     while left < right:
         i = (left + right) / 2
         remainder = budget
@@ -124,7 +125,8 @@ def maxim_log(budget, array):
 if __name__ == '__main__':
     from datetime import datetime
     start = datetime.now()
-    bud, arr = read_values('hamstr.in')
+    bud, arr = read_values('data1.txt')
     res = maxim_log(bud, arr)
     write_result('hamstr.out', '{0}'.format(res))
+    print res
     print (datetime.now() - start).total_seconds()
