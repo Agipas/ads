@@ -95,13 +95,42 @@ def maxim(budget, array):
     return max(result)
 
 
+def maxim_log(budget, array):
+    result = list()
+    print len(array)
+
+    left = 0
+    right = len(array)
+    while left < right:
+        i = (left + right) / 2
+        count = 0
+        remainder = budget
+        array.custom_sort(i)
+        for j, el in enumerate(array):
+            current_cost = el.sum(i)
+            if current_cost > remainder or j > i:
+                print 'yeh'
+                break
+            count += 1
+            remainder -= current_cost
+        if result:
+            if count > result[-1]:
+                result.append(count)
+                left = i
+            else:
+                right = i
+        else:
+            result.append(count)
+    return max(result)
+
+
 if __name__ == '__main__':
     from datetime import datetime
     start = datetime.now()
     bud, arr = read_values('hamstr.in')
-    # bud, arr = read_values('data3.txt')
+    # bud, arr = read_values('data.txt')
     # res = maximizer(bud, merge_sort(arr))
-    res = maxim(bud, arr)
+    res = maxim_log(bud, arr)
     write_result('hamstr.out', '{0}'.format(res))
     print res
     print (datetime.now() - start).total_seconds()
