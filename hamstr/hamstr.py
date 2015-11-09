@@ -76,12 +76,11 @@ def maxim(budget, array):
     for i in xrange(1, len(array) + 1):
         count = 0
         remainder = budget
-        # print i
         array.custom_sort(i)
-        # print array
         for j, el in enumerate(array):
             current_cost = el.sum(i)
             if current_cost > remainder or j > i - 1:
+                print 'yeh'
                 break
             count += 1
             remainder -= current_cost
@@ -93,14 +92,13 @@ def maxim(budget, array):
                 break
         else:
             result.append(count)
-    # print result
     return max(result)
 
 
 if __name__ == '__main__':
     from datetime import datetime
     start = datetime.now()
-    bud, arr = read_values('12.in')
+    bud, arr = read_values('hamstr.in')
     # bud, arr = read_values('data3.txt')
     # res = maximizer(bud, merge_sort(arr))
     res = maxim(bud, arr)
