@@ -125,7 +125,7 @@ def maxim_log(budget, array):
 if __name__ == '__main__':
     from datetime import datetime
     start = datetime.now()
-    bud, arr = read_values('data1.txt')
+    bud, arr = read_values('hamstr.in')
     res = maxim_log(bud, arr)
     write_result('hamstr.out', '{0}'.format(res))
     print res
