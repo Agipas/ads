@@ -4,6 +4,9 @@ Created on Tue Nov  3 16:34:32 2015
 
 @author: vwvolodya
 """
+import os
+
+PROGRAM_NAME = 'hamstr'
 
 
 class Homyak(object):
@@ -122,11 +125,22 @@ def maxim_log(budget, array):
     return count
 
 
+def main():
+    try:
+        bud, arr = read_values(PROGRAM_NAME + '.in')
+        res = maxim_log(bud, arr)
+        write_result(PROGRAM_NAME + '.out', '{0}'.format(res))
+        print "Got production file"
+        return
+    except (IOError, OSError):
+        pass
+    for _file in os.listdir("."):
+        if _file.endswith(".txt"):
+            print 'Reading file %s ....' %_file
+            bud, arr = read_values(_file)
+            res = maxim_log(bud, arr)
+            print 'Result: ', res
+
+
 if __name__ == '__main__':
-    from datetime import datetime
-    start = datetime.now()
-    bud, arr = read_values('hamstr.in')
-    res = maxim_log(bud, arr)
-    write_result('hamstr.out', '{0}'.format(res))
-    print res
-    print (datetime.now() - start).total_seconds()
+    main()
