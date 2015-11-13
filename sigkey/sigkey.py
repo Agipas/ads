@@ -24,14 +24,15 @@ def write_result(path, result):
 def solver(keys):
     checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
     length = len(keys)
-    # res = 0
-    # for i in xrange(0, length):
-    #     for j in xrange(i+1, length):
-    #         tmp = sorted(keys[i]+keys[j])
-    #         if checking_dict[len(tmp)] == tmp[-1]:
-    #             res += 1
-    res = sum((1 for i in xrange(length) for j in xrange(i+1, length)
-               if checking_dict[len(sorted(keys[i]+keys[j]))] == sorted(keys[i]+keys[j])[-1]))
+    res = 0
+    for i in xrange(0, length):
+        for j in xrange(i+1, length):
+            tmp = sorted(keys[i]+keys[j])
+            if checking_dict.get(len(tmp)) == tmp[-1]:
+                res += 1
+                break
+    #res = sum((1 for i in xrange(length) for j in xrange(i+1, length)
+    #           if checking_dict[len(sorted(keys[i]+keys[j]))] == sorted(keys[i]+keys[j])[-1]))
     return res
 
 
