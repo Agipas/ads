@@ -3,7 +3,7 @@ import os
 import string
 
 
-PROGRAM_NAME = 'bugtrk'
+PROGRAM_NAME = 'sigkey'
 
 
 def read_values(path):
