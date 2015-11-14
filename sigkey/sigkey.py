@@ -1,9 +1,10 @@
 __author__ = 'vwvolodya'
 import os
 import string
+import random
 
 
-PROGRAM_NAME = 'sigkey'
+PROGRAM_NAME = os.path.splitext(os.path.basename(__file__))[0]
 
 
 def read_values(path):
@@ -23,16 +24,20 @@ def write_result(path, result):
 
 def solver(keys):
     checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
-    length = len(keys)
     res = 0
-    for i in xrange(0, length):
-        for j in xrange(i+1, length):
-            tmp = sorted(keys[i]+keys[j])
+    random.shuffle(keys)
+    for i, el in enumerate(keys):
+        for j, elm in enumerate(keys):
+            if i == j:
+                continue
+            tmp = sorted(el + elm)
             if checking_dict.get(len(tmp)) == tmp[-1]:
                 res += 1
+                keys.remove(el)
+                keys.remove(elm)
                 break
-    #res = sum((1 for i in xrange(length) for j in xrange(i+1, length)
-    #           if checking_dict[len(sorted(keys[i]+keys[j]))] == sorted(keys[i]+keys[j])[-1]))
+        else:
+            continue
     return res
 
 
@@ -46,8 +51,8 @@ def main():
     except (IOError, OSError):
         pass
     for _file in os.listdir("."):
-        if _file.endswith(".txt"):
-            print 'Reading file %s ....' %_file
+        if _file.endswith(".txt") or _file.endswith(".in"):
+            print 'Reading file %s ....' % _file
             keys = read_values(_file)
             res = solver(keys)
             print 'Result: ', res
