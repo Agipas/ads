@@ -20,10 +20,11 @@ def write_result(path, result):
 
 def solver(n, h, w):
     least_square = (n * h * w) ** 0.5
-    side = max(h, w, math.ceil(least_square))
+    max_side = n * min(h, w)
+    side = max(max_side, h, w, math.ceil(least_square))
     while True:
-        x = int(side / h)    # number of rows
-        y = int(side / w)    # number of columns
+        x = int(side / h)  # number of rows
+        y = int(side / w)  # number of columns
         if x * y >= n:
             break
         side += 1
@@ -41,7 +42,7 @@ def main():
         pass
     for _file in os.listdir("."):
         if _file.endswith(".txt"):
-            print 'Reading file %s ....' %_file
+            print 'Reading file %s ....' % _file
             n, h, w = read_values(_file)
             res = solver(n, h, w)
             print 'Result: ', res

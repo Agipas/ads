@@ -27,14 +27,15 @@ def solver(keys):
     res = 0
     random.shuffle(keys)
     for i, el in enumerate(keys):
-        for j, elm in enumerate(keys):
+        for j in xrange(i, len(keys)):
             if i == j:
                 continue
-            tmp = sorted(el + elm)
+            second = keys[j]
+            tmp = sorted(el + second)
             if checking_dict.get(len(tmp)) == tmp[-1]:
                 res += 1
                 keys.remove(el)
-                keys.remove(elm)
+                keys.remove(second)
                 break
         else:
             continue
