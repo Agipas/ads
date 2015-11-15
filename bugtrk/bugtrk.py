@@ -28,6 +28,18 @@ def solver(n, h, w):
         if x * y >= n:
             break
         side += 1
+    # try to make side smaller
+    check = side - 1
+    x = int(check / h)  # number of rows
+    y = int(check / w)  # number of columns
+    if x * y >= n:
+        side = max(h, w, math.ceil(least_square))
+        while True:
+            x = int(side / h)  # number of rows
+            y = int(side / w)  # number of columns
+            if x * y >= n:
+                break
+            side += 1
     return side
 
 
