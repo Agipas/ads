@@ -35,12 +35,12 @@ def solver(n, h, w):
     if x * y >= n:
         side = max(h, w, math.ceil(least_square))
         while True:
-            x = int(side / h)  # number of rows
-            y = int(side / w)  # number of columns
+            x = long(side / h)  # number of rows
+            y = long(side / w)  # number of columns
             if x * y >= n:
                 break
             side += 1
-    return side
+    return long(side)
 
 
 def solver_2(n, h, w):
@@ -59,6 +59,11 @@ def solver_2(n, h, w):
         else:
             left = center
     return side
+
+
+def solver_3(n, h, w):
+    m1, m2, m3 = sorted((n, h, w))
+
 
 
 def main():
