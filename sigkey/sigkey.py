@@ -42,10 +42,24 @@ def solver(keys):
     return res
 
 
+def solver_2(keys):
+    checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
+    potential_start_of_key = [k for k in keys if 'a' in k]
+    potential_end_of_key = [k for k in keys if 'a' not in k]
+    count = 0
+    for el in potential_start_of_key:
+        for ell in potential_end_of_key:
+            tmp = sorted(el + ell)
+            if checking_dict.get(len(tmp)) == tmp[-1]:
+                count += 1
+                potential_end_of_key.remove(ell)
+                break
+    return count
+
 def main():
     try:
         keys = read_values(PROGRAM_NAME + '.in')
-        res = solver(keys)
+        res = solver_2(keys)
         write_result(PROGRAM_NAME + '.out', '{0}'.format(res))
         print "Got production file"
         return
