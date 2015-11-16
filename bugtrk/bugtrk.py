@@ -68,10 +68,15 @@ def solver_3(n, h, w):
     m1, m2, m3 = sorted((n, h, w))
 
 
+def compute(path):
+    n, h, w = read_values(path)
+    res = solver_2(n, h, w)
+    return res
+
+
 def main():
     try:
-        n, h, w = read_values(PROGRAM_NAME + '.in')
-        res = solver_2(n, h, w)
+        res = compute(PROGRAM_NAME + '.in')
         write_result(PROGRAM_NAME + '.out', '{0}'.format(int(res)))
         print "Got production file"
         return
@@ -80,8 +85,7 @@ def main():
     for _file in os.listdir("."):
         if _file.endswith(".txt"):
             print 'Reading file %s ....' % _file
-            n, h, w = read_values(_file)
-            res = solver_2(n, h, w)
+            res = compute(_file)
             print 'Result: ', res
 
 
