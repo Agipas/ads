@@ -43,10 +43,28 @@ def solver(n, h, w):
     return side
 
 
+def solver_2(n, h, w):
+    min_side = math.ceil((n * h * w) ** 0.5)
+    max_side = n * max(h, w)
+    left = min_side
+    right = max_side
+    side = min_side
+    while left < right:
+        center = (left + right) / 2
+        x = int(center / h)  # number of rows
+        y = int(center / w)  # number of columns
+        if x * y >= n:
+            side = center
+            right = center
+        else:
+            left = center
+    return side
+
+
 def main():
     try:
         n, h, w = read_values(PROGRAM_NAME + '.in')
-        res = solver(n, h, w)
+        res = solver_2(n, h, w)
         write_result(PROGRAM_NAME + '.out', '{0}'.format(int(res)))
         print "Got production file"
         return

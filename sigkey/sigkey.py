@@ -56,6 +56,11 @@ def solver_2(keys):
                 break
     return count
 
+
+def solver_3(keys):
+    pass
+
+
 def main():
     try:
         keys = read_values(PROGRAM_NAME + '.in')
