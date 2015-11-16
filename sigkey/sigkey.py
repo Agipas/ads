@@ -44,16 +44,23 @@ def solver(keys):
 
 def solver_2(keys):
     checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
+    checking_dict_inverse = dict(((k, v) for k, v in zip(string.ascii_lowercase, range(1, 27))))
     potential_start_of_key = [k for k in keys if 'a' in k]
     potential_end_of_key = [k for k in keys if 'a' not in k]
     count = 0
     for el in potential_start_of_key:
         for ell in potential_end_of_key:
-            tmp = sorted(el + ell)
-            if checking_dict.get(len(tmp)) == tmp[-1]:
-                count += 1
-                potential_end_of_key.remove(ell)
+            # tmp = sorted(el + ell)
+            # if checking_dict.get(len(tmp)) == tmp[-1]:
+            #     count += 1
+            #     potential_end_of_key.remove(ell)
+            #     break
+            for i, c in enumerate(el + ell):
+                if checking_dict_inverse.get(c) != i + 1:     # enumerate starts with 0 instead of 1
+                    break
+            else:
                 break
+            count += 1
     return count
 
 
