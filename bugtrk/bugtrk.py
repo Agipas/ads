@@ -1,7 +1,7 @@
 __author__ = 'vwvolodya'
 import os
 import math
-import  datetime
+import datetime
 
 
 PROGRAM_NAME = 'bugtrk'
@@ -46,12 +46,12 @@ def solver(n, h, w):
 
 def solver_2(n, h, w):
     st = datetime.datetime.now()
-    min_side = math.ceil((n * h * w) ** 0.5)
+    min_side = long(math.ceil((n * h * w) ** 0.5))
     max_side = n * max(h, w)
     left = min_side
     right = max_side
     side = min_side
-    while left < right:
+    while right - left > 1:
         center = (left + right) / 2
         x = int(center / h)  # number of rows
         y = int(center / w)  # number of columns
@@ -60,13 +60,12 @@ def solver_2(n, h, w):
             right = center
         else:
             left = center
-    print(datetime.datetime.now() - st).microseconds
+    print (datetime.datetime.now() - st).microseconds
     return side
 
 
 def solver_3(n, h, w):
     m1, m2, m3 = sorted((n, h, w))
-
 
 
 def main():
@@ -82,7 +81,7 @@ def main():
         if _file.endswith(".txt"):
             print 'Reading file %s ....' % _file
             n, h, w = read_values(_file)
-            res = solver(n, h, w)
+            res = solver_2(n, h, w)
             print 'Result: ', res
 
 
