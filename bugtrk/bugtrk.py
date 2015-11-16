@@ -44,6 +44,8 @@ def solver(n, h, w):
 
 
 def solver_2(n, h, w):
+    import  datetime
+    st = datetime.datetime.now()
     min_side = math.ceil((n * h * w) ** 0.5)
     max_side = n * max(h, w)
     left = min_side
@@ -58,6 +60,7 @@ def solver_2(n, h, w):
             right = center
         else:
             left = center
+    print(datetime.datetime.now() - st).microseconds
     return side
 
 
