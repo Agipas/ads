@@ -2,6 +2,7 @@ __author__ = 'vwvolodya'
 import os
 import string
 import random
+import datetime
 
 
 PROGRAM_NAME = os.path.splitext(os.path.basename(__file__))[0]
@@ -43,10 +44,12 @@ def solver(keys):
 
 
 def solver_2(keys):
+    start = datetime.datetime.now()
     checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
     checking_dict_inverse = dict(((k, v) for k, v in zip(string.ascii_lowercase, range(1, 27))))
     potential_start_of_key = [k for k in keys if 'a' in k]
     potential_end_of_key = [k for k in keys if 'a' not in k]
+    print (datetime.datetime.now() - start).microseconds
     count = 0
     for el in potential_start_of_key:
         for ell in potential_end_of_key:
