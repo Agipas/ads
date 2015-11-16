@@ -64,7 +64,7 @@ def solver_2(n, h, w):
 def main():
     try:
         n, h, w = read_values(PROGRAM_NAME + '.in')
-        res = solver_2(n, h, w)
+        res = solver(n, h, w)
         write_result(PROGRAM_NAME + '.out', '{0}'.format(int(res)))
         print "Got production file"
         return
