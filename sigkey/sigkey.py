@@ -81,15 +81,18 @@ def solver_3(keys):
                 count += 1
                 end.remove(ell)
                 break
-
-
     return count
+
+
+def compute(path):
+    keys = read_values(path)
+    res = solver_3(keys)
+    return res
 
 
 def main():
     try:
-        keys = read_values(PROGRAM_NAME + '.in')
-        res = solver_3(keys)
+        res = compute(PROGRAM_NAME + '.in')
         write_result(PROGRAM_NAME + '.out', '{0}'.format(res))
         print "Got production file"
         return
@@ -98,8 +101,7 @@ def main():
     for _file in os.listdir("."):
         if _file.endswith(".txt") or _file.endswith(".in"):
             print 'Reading file %s ....' % _file
-            keys = read_values(_file)
-            res = solver_3(keys)
+            res = compute(_file)
             print 'Result: ', res
 
 
