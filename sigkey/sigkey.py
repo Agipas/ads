@@ -69,8 +69,8 @@ def solver_2(keys):
 
 def solver_3(keys):
     checking_dict_inverse = dict(((k, v) for k, v in zip(string.ascii_lowercase, range(1, 27))))
-    checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
-
+    checking_dict = dict(((v, k) for k, v in checking_dict_inverse.iteritems()))
+    random.shuffle(keys)
     keys = set(keys)
     start = {el for el in keys if 'a' in el}
     end = keys - start
