@@ -69,10 +69,26 @@ def solver_2(n, h, w):
     return side
 
 
+def solver_3(n, h, w):
+    left = long(math.ceil((n * h * w) ** 0.5))
+    right = n * max(h, w) + 1
+    side = left
+    while left <= right:
+        center = (left + right) / 2
+        x = int(center / h)  # number of rows
+        y = int(center / w)  # number of columns
+        if x * y >= n:
+            side = center
+            right = center - 1
+        else:
+            left = center + 1
+    return side
+
+
 def compute(path):
     n, h, w = read_values(path)
     print n, h, w
-    res = solver_2(n, h, w)
+    res = solver_3(n, h, w)
     return res
 
 
