@@ -69,17 +69,19 @@ def solver_2(keys):
 
 def solver_3(keys):
     checking_dict_inverse = dict(((k, v) for k, v in zip(string.ascii_lowercase, range(1, 27))))
+    checking_dict = dict(((k, v) for k, v in zip(range(1, 27), string.ascii_lowercase)))
 
     start = [el for el in keys if 'a' in el]
     end = [el for el in keys if 'a' not in el]
     count = 0
     for el in start:
         for ell in end:
-            tmp = el + ell
-            if sum([1 for i, c in enumerate(tmp) if checking_dict_inverse.get(c) == i + 1]) == len(tmp):
+            tmp = sorted(el + ell)
+            if checking_dict.get(len(tmp)) == tmp[-1]:
                 count += 1
                 end.remove(ell)
                 break
+
 
     return count
 
