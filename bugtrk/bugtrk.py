@@ -1,7 +1,6 @@
 __author__ = 'vwvolodya'
 import os
 import math
-import datetime
 
 
 PROGRAM_NAME = 'bugtrk'
@@ -45,7 +44,6 @@ def solver(n, h, w):
 
 
 def solver_2(n, h, w):
-    st = datetime.datetime.now()
     min_side = long(math.ceil((n * h * w) ** 0.5))
     max_side = n * max(h, w)
     left = min_side
@@ -65,7 +63,6 @@ def solver_2(n, h, w):
             right = center - 1
         else:
             left = center + 1
-    print (datetime.datetime.now() - st).microseconds
     return side
 
 
@@ -88,7 +85,7 @@ def solver_3(n, h, w):
 def compute(path):
     n, h, w = read_values(path)
     print n, h, w
-    res = solver_3(n, h, w)
+    res = solver_2(n, h, w)
     return res
 
 
