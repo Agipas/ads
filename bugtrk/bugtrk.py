@@ -51,6 +51,11 @@ def solver_2(n, h, w):
     left = min_side
     right = max_side
     side = min_side
+    tmp = max_side - 1
+    x = int(tmp / h)  # number of rows
+    y = int(tmp / w)  # number of columns
+    if x * y < n:
+        return max_side
     while right - left > 1:
         center = (left + right) / 2
         x = int(center / h)  # number of rows
@@ -70,6 +75,7 @@ def solver_3(n, h, w):
 
 def compute(path):
     n, h, w = read_values(path)
+    print n, h, w
     res = solver_2(n, h, w)
     return res
 
