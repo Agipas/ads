@@ -70,17 +70,15 @@ def solver_2(keys):
 def solver_3(keys):
     checking_dict_inverse = dict(((k, v) for k, v in zip(string.ascii_lowercase, range(1, 27))))
     checking_dict = dict(((v, k) for k, v in checking_dict_inverse.iteritems()))
-    random.shuffle(keys)
     keys = set(keys)
     start = {el for el in keys if 'a' in el}
     end = keys - start
     count = 0
     for el in start:
         for ell in end:
-            tmp = sorted(el + ell)
-            if checking_dict.get(len(tmp)) == tmp[-1]:
+            tmp = el + ell
+            if sum([1 for c in tmp if checking_dict_inverse.get(c) <= len(tmp)]) == len(tmp):
                 count += 1
-                end.remove(ell)
                 break
     return count
 
@@ -100,7 +98,7 @@ def main():
     except (IOError, OSError):
         pass
     for _file in os.listdir("."):
-        if _file.endswith(".txt") or _file.endswith(".in"):
+        if _file.endswith(".txt"):
             print 'Reading file %s ....' % _file
             res = compute(_file)
             print 'Result: ', res
