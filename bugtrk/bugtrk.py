@@ -56,21 +56,17 @@ def solver_2(n, h, w):
     y = int(tmp / w)  # number of columns
     if x * y < n:
         return max_side
-    while right - left > 1:
+    while left <= right:
         center = (left + right) / 2
         x = int(center / h)  # number of rows
         y = int(center / w)  # number of columns
         if x * y >= n:
             side = center
-            right = center
+            right = center - 1
         else:
-            left = center
+            left = center + 1
     print (datetime.datetime.now() - st).microseconds
     return side
-
-
-def solver_3(n, h, w):
-    m1, m2, m3 = sorted((n, h, w))
 
 
 def compute(path):
