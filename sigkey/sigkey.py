@@ -68,13 +68,26 @@ def solver_2(keys):
 
 
 def solver_3(keys):
-    pass
+    checking_dict_inverse = dict(((k, v) for k, v in zip(string.ascii_lowercase, range(1, 27))))
+
+    start = [el for el in keys if 'a' in el]
+    end = [el for el in keys if 'a' not in el]
+    count = 0
+    for el in start:
+        for ell in end:
+            tmp = el + ell
+            if sum([1 for i, c in enumerate(tmp) if checking_dict_inverse.get(c) == i + 1]) == len(tmp):
+                count += 1
+                end.remove(ell)
+                break
+
+    return count
 
 
 def main():
     try:
         keys = read_values(PROGRAM_NAME + '.in')
-        res = solver_2(keys)
+        res = solver_3(keys)
         write_result(PROGRAM_NAME + '.out', '{0}'.format(res))
         print "Got production file"
         return
@@ -84,7 +97,7 @@ def main():
         if _file.endswith(".txt") or _file.endswith(".in"):
             print 'Reading file %s ....' % _file
             keys = read_values(_file)
-            res = solver(keys)
+            res = solver_3(keys)
             print 'Result: ', res
 
 
