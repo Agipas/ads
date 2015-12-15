@@ -15,6 +15,7 @@ def timeit(method):
 
         print '%r  %2.3f seconds' % (method.__name__.upper(), te - ts)
         return result
+
     return timed
 
 
@@ -47,7 +48,7 @@ def main():
     except (IOError, OSError):
         pass
     for _file in os.listdir("."):
-        if _file.endswith(".txt") or _file.endswith(".in"):
+        if _file.endswith(".txt"):  # or _file.endswith(".in"):
             print 'Reading file %s ....' % _file
             res = compute(_file)
             print 'Result: ', res
@@ -84,6 +85,25 @@ def solver(keys):
                 count += 1
                 break
     return count
+
+
+def solver_2(keys):
+    l = string.ascii_lowercase
+    sums = [sum(ord(c) for c in l[:i]) for i in range(1, len(l) + 1)]
+    indexed = dict()
+    for el in keys:
+        s = sum((ord(c) for c in el))
+        avg = float(s) / len(el)
+        disp = sum((abs(ord(c) - avg) for c in el)) / len(el)
+        if not indexed.get((s, disp)):
+            indexed[(s, disp)] = [el]
+        else:
+            indexed[(s, disp)].append(el)
+    for k, v in indexed.iteritems():
+        print len(v)
+
+
+
 
 
 if __name__ == '__main__':
