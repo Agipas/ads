@@ -60,7 +60,7 @@ def compute(path):
 def main():
     try:
         res = compute(PROGRAM_NAME + '.in')
-        write_result(PROGRAM_NAME + '.out', '{0}'.format(int(res)))
+        write_result(PROGRAM_NAME + '.out', res)
         print "Got production file"
         return
     except (IOError, OSError):
