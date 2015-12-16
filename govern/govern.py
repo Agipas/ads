@@ -24,7 +24,7 @@ def write_result(path, result):
         else:
             f.write(str(result))
 
-
+@timeit
 def read_values(path):
     # {'label': vertex, }
     vertices = dict()
@@ -48,7 +48,7 @@ def read_values(path):
     vertices = vertices.values()
     return Graph(vertices, edges)
 
-
+@timeit
 def compute(path):
     graph = read_values(path)
     result = get_topological_order(graph)
@@ -70,6 +70,7 @@ def main():
             input_path = os.path.abspath(os.path.join(path, _file))
             res = compute(input_path)
             print 'Result: ', res
+            # write_result('out.txt', res)
 
 
 def get_topological_order(graph):
@@ -88,30 +89,10 @@ def tarjan_dfs(graph, use_recursion=True):
     unvisited_vertices = set(graph.vertices)
     visited_status = {vertex.label: NOT_VISITED for vertex in graph.vertices}
 
-    # A recursive, textbook implementation of Tarjan's DFS.
-    def dfs_recursive(vertex):
-        # We came across an unresolved dependency. It means there's a cycle in the graph.
-        if visited_status[vertex.label] == VISITED:
-            raise NotDirectedAcyclicGraphError
-
-        if visited_status[vertex.label] == NOT_VISITED:
-            unvisited_vertices.remove(vertex)
-            visited_status[vertex.label] = VISITED
-
-            # Getting all dependencies of the current vertex.
-            neighbors = [edge.end_vertex for edge in vertex.outbound_edges]
-
-            # Trying to recursively satisfy each dependency.
-            for neighbor in neighbors:
-                dfs_recursive(neighbor)
-
-            # Marking this vertex as resolved and adding it to the order.
-            visited_status[vertex.label] = VISITED_AND_RESOLVED
-            topological_order.append(vertex)
-
     # An alternative stack-based implementation of DFS.
     # Particularly useful for Python due to its recursion limit.
-    def dfs_stack(start_vertex):
+    while len(unvisited_vertices) > 0:
+        start_vertex = unvisited_vertices.pop()
         stack = [start_vertex]
 
         while len(stack) > 0:
@@ -122,7 +103,8 @@ def tarjan_dfs(graph, use_recursion=True):
                 unvisited_vertices.remove(vertex)
 
             unvisited_neighbors = []
-            for neighbor in [edge.end_vertex for edge in vertex.outbound_edges]:
+            edges = [edge.end_vertex for edge in vertex.outbound_edges]
+            for neighbor in edges:
                 # We came across an unresolved dependency. It means there's a cycle in the graph.
                 if visited_status[neighbor.label] == VISITED:
                     raise NotDirectedAcyclicGraphError
@@ -144,19 +126,11 @@ def tarjan_dfs(graph, use_recursion=True):
                 stack.append(vertex)
                 stack.extend(unvisited_neighbors)
 
-    # Using the stack-based implementation if the corresponding parameter was set.
-    dfs_implementation = dfs_recursive if use_recursion else dfs_stack
-
-    # Visit any unvisited vertex until there are no unvisited vertices left.
-    while len(unvisited_vertices) > 0:
-        dfs_implementation(next(iter(unvisited_vertices)))
-
     return topological_order
 
 
-class NotDirectedAcyclicGraphError:
-    def __init__(self):
-        pass
+class NotDirectedAcyclicGraphError(ValueError):
+    pass
 
 
 class Vertex:
