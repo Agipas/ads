@@ -1,6 +1,7 @@
 import os
 import time
 from collections import deque
+from pprint import pprint
 
 PROGRAM_NAME = 'govern'
 
@@ -25,6 +26,7 @@ def write_result(path, result):
         else:
             f.write(str(result))
 
+
 @timeit
 def read_values(path):
     # {'label': vertex, }
@@ -46,12 +48,12 @@ def read_values(path):
             if end not in vertices:
                 vertices[end] = end_v
 
-    vertices = vertices.values()
-    return Graph(vertices, edges)
+    return Graph(vertices.values(), edges, vertices)
 
 
 def compute(path):
     graph = read_values(path)
+    print(graph)
     result = get_topological_order(graph)
     return result
 
@@ -66,19 +68,19 @@ def main():
         pass
     path = "../problems/" + PROGRAM_NAME + '/testcases/'
     for _file in os.listdir(path):
-        if _file.endswith(".txt"):
+        if _file.endswith(".in"):
             print 'Reading file %s ....' % _file
             input_path = os.path.abspath(os.path.join(path, _file))
             res = compute(input_path)
-            print 'Result: ', res
+            pprint(res)
             # write_result('out.txt', res)
 
 
 def get_topological_order(graph):
-    return tarjan_dfs(graph, use_recursion=False)
+    return tarjan_dfs(graph)
 
 
-def tarjan_dfs(graph, use_recursion=True):
+def tarjan_dfs(graph):
     # Instead of keeping a boolean visited[] array, our visits will have 3 states.
     NOT_VISITED = 0
     VISITED = 1
@@ -86,15 +88,15 @@ def tarjan_dfs(graph, use_recursion=True):
 
     topological_order = []
     topological_order_set = set()
-
     unvisited_vertices = set(graph.vertices)
     visited_status = {vertex.label: NOT_VISITED for vertex in graph.vertices}
 
+    stack = deque()
     # An alternative stack-based implementation of DFS.
     # Particularly useful for Python due to its recursion limit.
     while len(unvisited_vertices) > 0:
         start_vertex = unvisited_vertices.pop()
-        stack = deque([start_vertex])
+        stack.append(start_vertex)
 
         while len(stack) > 0:
             vertex = stack.pop()
@@ -104,13 +106,14 @@ def tarjan_dfs(graph, use_recursion=True):
                 unvisited_vertices.remove(vertex)
 
             unvisited_neighbors = []
-            edges = [edge.end_vertex for edge in vertex.outbound_edges]
-            for neighbor in edges:
+            neighbor_vertices_labels = [edge.end_vertex.label for edge in vertex.outbound_edges]
+            for neighbor_label in neighbor_vertices_labels:
+                neighbor = graph.dct[neighbor_label]
                 # We came across an unresolved dependency. It means there's a cycle in the graph.
-                if visited_status[neighbor.label] == VISITED:
+                if visited_status[neighbor_label] == VISITED:
                     raise NotDirectedAcyclicGraphError
                 # Getting all unexplored dependencies of the current vertex.
-                if visited_status[neighbor.label] == NOT_VISITED:
+                if visited_status[neighbor_label] == NOT_VISITED:
                     unvisited_neighbors.append(neighbor)
 
             # If there are no more dependencies to explore, it means we've satisfied all of them
@@ -168,9 +171,16 @@ class Edge:
 
 
 class Graph:
-    def __init__(self, vertices, edges):
+    def __init__(self, vertices, edges, dct=None):
         self.vertices = vertices
         self.edges = edges
+        self.dct = dct
+
+    def __str__(self):
+        res = ''
+        for el in self.edges:
+            res += str(el) + '\n'
+        return res
 
 
 if __name__ == '__main__':
