@@ -1,5 +1,6 @@
 import os
 import time
+from collections import deque
 
 PROGRAM_NAME = 'govern'
 
@@ -93,7 +94,7 @@ def tarjan_dfs(graph, use_recursion=True):
     # Particularly useful for Python due to its recursion limit.
     while len(unvisited_vertices) > 0:
         start_vertex = unvisited_vertices.pop()
-        stack = [start_vertex]
+        stack = deque([start_vertex])
 
         while len(stack) > 0:
             vertex = stack.pop()
