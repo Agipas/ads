@@ -49,7 +49,6 @@ def read_values(path):
     return Graph(vertices, edges)
 
 
-@timeit
 def compute(path):
     graph = read_values(path)
     result = get_topological_order(graph)
