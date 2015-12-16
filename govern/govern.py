@@ -110,7 +110,7 @@ def tarjan_dfs(graph):
             for neighbor in neighbor_vertices:
                 # We came across an unresolved dependency. It means there's a cycle in the graph.
                 if visited_status[neighbor.label] == VISITED:
-                    raise NotDirectedAcyclicGraphError
+                    raise NotDirectedAcyclicGraphError('No circles allowed')
                 # Getting all unexplored dependencies of the current vertex.
                 if visited_status[neighbor.label] == NOT_VISITED:
                     unvisited_neighbors.append(neighbor)
