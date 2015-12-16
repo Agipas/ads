@@ -39,16 +39,16 @@ def read_values(path):
                 break
             start, end = next_line.split()
             start_v, end_v = Vertex(start), Vertex(end)
-            edge = Edge(start_v, end_v)
-            edges.append(edge)
+
             if start not in vertices:
                 vertices[start] = start_v
-            vertices[start].outbound_edges.append(edge)
-
             if end not in vertices:
                 vertices[end] = end_v
+            edge = Edge(vertices[start], vertices[end])
+            edges.append(edge)
+            vertices[start].outbound_edges.append(edge)
 
-    return Graph(vertices.values(), edges, vertices)
+    return Graph(vertices.values(), edges)
 
 
 def compute(path):
@@ -106,14 +106,13 @@ def tarjan_dfs(graph):
                 unvisited_vertices.remove(vertex)
 
             unvisited_neighbors = []
-            neighbor_vertices_labels = [edge.end_vertex.label for edge in vertex.outbound_edges]
-            for neighbor_label in neighbor_vertices_labels:
-                neighbor = graph.dct[neighbor_label]
+            neighbor_vertices = [edge.end_vertex for edge in vertex.outbound_edges]
+            for neighbor in neighbor_vertices:
                 # We came across an unresolved dependency. It means there's a cycle in the graph.
-                if visited_status[neighbor_label] == VISITED:
+                if visited_status[neighbor.label] == VISITED:
                     raise NotDirectedAcyclicGraphError
                 # Getting all unexplored dependencies of the current vertex.
-                if visited_status[neighbor_label] == NOT_VISITED:
+                if visited_status[neighbor.label] == NOT_VISITED:
                     unvisited_neighbors.append(neighbor)
 
             # If there are no more dependencies to explore, it means we've satisfied all of them
