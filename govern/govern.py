@@ -53,7 +53,6 @@ def read_values(path):
 
 def compute(path):
     graph = read_values(path)
-    print(graph)
     result = get_topological_order(graph)
     return result
 
