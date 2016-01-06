@@ -4,6 +4,7 @@ import random
 import time
 import os
 from pprint import pprint
+from collections import OrderedDict
 
 
 PROGRAM_NAME = 'career'
@@ -34,16 +35,11 @@ def compute(path):
     graph, bottom_vertices = Graph.from_file(path)
     start = graph.vertices[0]
     # primive greedy algo
-    path = [start]
-    pointer = start
-    while True:
-        edges = pointer.outbound_edges
-        if not edges:
-            break
-        next_v = max(edges, key=lambda x: x.weight)
-        path.append(next_v)
-        pointer = next_v.end_vertex
-    return sum([i.weight for i in path])
+    distances, path_predecessors = Graph.dijkstra(graph, start)
+    last = distances.values()
+    if bottom_vertices:
+        last = distances.values()[-len(bottom_vertices):]
+    return max(last) + start.weight
 
 
 def main():
@@ -56,7 +52,7 @@ def main():
         pass
     path = "../problems/" + PROGRAM_NAME + '/testcases/'
     for _file in os.listdir(path):
-        if _file.endswith(".txt") or _file.endswith(".in"):
+        if _file.endswith(".in"): # or _file.endswith(".in"):
             print 'Reading file %s ....' % _file
             input_path = os.path.abspath(os.path.join(path, _file))
             res = compute(input_path)
@@ -144,8 +140,8 @@ class Graph:
     def dijkstra(cls, graph, start_vertex):
         # Initialization: setting all known shortest distances to infinity,
         # and the start vertex will have the shortest distance to itself equal to 0.
-        INFINITY = float('inf')
-        distances = {vertex.label: INFINITY for vertex in graph.vertices}
+        INFINITY = -float('inf')
+        distances = OrderedDict((vertex.label, INFINITY) for vertex in graph.vertices)
         distances[start_vertex.label] = 0
 
         path_predecessors = {start_vertex.label: None}
@@ -166,7 +162,7 @@ class Graph:
                 alternative_distance = distances[shortest_distance_vertex.label] + edge.weight
 
                 # If we have indeed found a better path, remembering the new distance and predecessor.
-                if alternative_distance < distances[neighbor_vertex.label]:
+                if alternative_distance > distances[neighbor_vertex.label]:
                     distances[neighbor_vertex.label] = alternative_distance
                     path_predecessors[neighbor_vertex.label] = shortest_distance_vertex
 
