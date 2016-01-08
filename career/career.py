@@ -1,7 +1,6 @@
-import time
 import os
+import time
 from pprint import pprint
-
 
 PROGRAM_NAME = 'career'
 
@@ -42,16 +41,19 @@ def read_values(path):
 
 def compute(path):
     data, solutions, levels = read_values(path)
-    for j in xrange(1, levels + 1):
-        for i in xrange(levels):
-            s1 = solutions[j][i - 1]
-            d1 = data[i - 1][j]
-            case_1 = s1 + d1
-            s2 = solutions[j + 1][i - 1]
-            d2 = data[i - 1][j]
-            case_2 = s2 + d2
-            solutions[j][i] = max(case_1, case_2)
-    return solutions[levels][0]
+    max_exp = 0
+    data = data[::-1]
+    for i in xrange(1, levels + 1):
+        for j in xrange(levels + 1 - i):
+            s_1 = solutions[i - 1][j]
+            d_1 = data[i - 1][j]
+            case1 = s_1 + d_1
+            s_2 = solutions[i - 1][j + 1]
+            d_2 = d_1
+            case2 = s_2 + d_2
+            solutions[i][j] = max(case1, case2)
+        max_exp = solutions[levels][0]
+    return max_exp
 
 
 def main():
