@@ -44,14 +44,8 @@ class Vertex:
 
     def get_sub_strings(self):
         string = self.label
-        if len(string) <= 1:
-            return set()
-        char_list = list(string)
-        result = list()
-        for i, _ in enumerate(char_list):
-            tmp = char_list[:]
-            del tmp[i]
-            result.append("".join(tmp))
+        result = [''.join([s for i, s in enumerate(string) if i != j]) for j in range(len(string))]
+
         return set(result)
 
     def __str__(self):
@@ -101,7 +95,7 @@ class Graph:
             vertices_dict = dict()
 
             num_strings = int(input_file.readline())
-            for i in xrange(num_strings):
+            for i in range(num_strings):
                 next_string = input_file.readline().strip()
                 vertex = vertices_dict.get(next_string, Vertex(next_string, real=True))
                 vertex.real = True
@@ -153,21 +147,17 @@ class Graph:
             # this would be the place to do the sorting.
 
             # Adding these neighbors to the queue, all at once.
-            result.append((current_vertex.label, max_depth))
             for neighbor, _ in neighbors:
                 neighbor.visited = True
             queue.extend(neighbors)
 
-        return max_depth, result
+        return max_depth,
 
     def compute_for_all(self):
         m = 0
         for v in self.vertices:
             if v.real and not v.visited:
-                max_depth, path = self.bfs(v)
-                for w, i in path:
-                    if i > 4:
-                        print path
+                max_depth = self.bfs(v)
                 if max_depth > m:
                     m = max_depth
         return m
