@@ -151,7 +151,7 @@ class Graph:
                 neighbor.visited = True
             queue.extend(neighbors)
 
-        return max_depth,
+        return max_depth
 
     def compute_for_all(self):
         m = 0
@@ -173,7 +173,7 @@ def main():
         pass
     path = "../problems/" + PROGRAM_NAME + '/testcases/'
     for _file in os.listdir(path):
-        if _file.endswith(".in"):# or _file.endswith(".txt"):
+        if _file.endswith(".in") or _file.endswith(".txt"):
             pprint('Reading file %s ....' % _file)
             input_path = os.path.abspath(os.path.join(path, _file))
             res = compute(input_path)
