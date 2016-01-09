@@ -44,7 +44,16 @@ class Vertex:
 
     def get_sub_strings(self):
         string = self.label
-        result = [''.join([s for i, s in enumerate(string) if i != j]) for j in range(len(string))]
+        if len(string) <= 1:
+            return set()
+        char_list = list(string)
+        result = list()
+        for i, _ in enumerate(char_list):
+            tmp = char_list[:]
+            del tmp[i]
+            result.append("".join(tmp))
+
+        r = [''.join([s for i, s in enumerate(string) if i!=j]) for j in range(len(string))]
 
         return set(result)
 
@@ -86,7 +95,6 @@ class Graph:
         return res
 
     @classmethod
-    @timeit
     def from_file(cls, path):
         with open(path, "r") as input_file:
 
@@ -95,7 +103,7 @@ class Graph:
             vertices_dict = dict()
 
             num_strings = int(input_file.readline())
-            for i in range(num_strings):
+            for i in xrange(num_strings):
                 next_string = input_file.readline().strip()
                 vertex = vertices_dict.get(next_string, Vertex(next_string, real=True))
                 vertex.real = True
