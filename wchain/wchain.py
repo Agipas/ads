@@ -30,16 +30,16 @@ def write_result(path, result):
 
 def compute(path):
     data = Graph.from_file(path)
-    start = random.choice(data.vertices)
-    res = data.bfs(start)
-    return len(res)
+    data.compute_for_all()
+    res = max(data.computed_vertices, key=lambda v: v.max_depth)
+    return res.max_depth + 1
 
 
 class Vertex:
     def __init__(self, label, real=False):
         self.label = label
         self.outbound_edges = []
-        self.max_depth = 1
+        self.max_depth = 0
         self.real = real
 
     def get_sub_strings(self):
@@ -84,6 +84,7 @@ class Graph:
         self.vertices = vertices
         self.edges = edges
         self.vertices_dict = vertices_dict
+        self.computed_vertices = []
 
     def __str__(self):
         res = ''
@@ -133,12 +134,15 @@ class Graph:
 
         # Initially, the queue contains only the start vertex
         # and all vertices are assumed to be not visited yet.
-        queue = [start_vertex]
+
+        max_depth = 0
+
+        queue = [(start_vertex, max_depth)]
         visited = {v.label: False for v in self.vertices}
 
         while len(queue) > 0:
             # Remove a vertex from the queue.
-            current_vertex = queue.pop(0)
+            current_vertex, max_depth = queue.pop(0)
 
             # If we've already been here, ignoring this vertex completely.
             # This condition can happen when, for example, this vertex was a neighbor of
@@ -151,9 +155,9 @@ class Graph:
 
             # Getting all adjacent vertices which haven't been visited yet.
             # It's only a matter of traversing the outbound_edges list and getting end_vertex for each.
-            neighbors = [edge.end_vertex
+            neighbors = [(edge.end_vertex, max_depth + 1)
                          for edge in current_vertex.outbound_edges
-                         if not visited[edge.end_vertex.label]]
+                         if (not visited[edge.end_vertex.label] and edge.end_vertex.real)]
 
             # If we need to enforce a particular ordering on the neighbors we visit,
             # e.g., visit them in the order of increasing labels (1, 4, 6; not 4, 6, 1),
@@ -162,8 +166,17 @@ class Graph:
             # Adding these neighbors to the queue, all at once.
             result.append(current_vertex.label)
             queue.extend(neighbors)
+        start_vertex.max_depth = max_depth
+        self.computed_vertices.append(start_vertex)
 
-        return result
+        return max_depth, len(result)
+
+    def compute_for_all(self):
+        number_of_visited = 0
+        for v in self.vertices:
+            if v.real:
+                max_depth, num_visited = self.bfs(v)
+                number_of_visited += num_visited
 
 
 def main():
