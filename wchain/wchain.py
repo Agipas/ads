@@ -103,19 +103,14 @@ class Graph:
             num_strings = int(input_file.readline())
             for i in xrange(num_strings):
                 next_string = input_file.readline().strip()
-                vertex = vertices_dict.get(next_string)
-                if vertex:
-                    vertex.real = True
-                else:
-                    vertex = Vertex(next_string, real=True)
+                vertex = vertices_dict.get(next_string, Vertex(next_string, real=True))
+                vertex.real = True
                 labels = vertex.get_sub_strings()
                 children = list()
                 edges_to_children = list()
                 if labels:
                     for label in labels:
-                        v = vertices_dict.get(label)
-                        if not v:
-                            v = Vertex(label)
+                        v = vertices_dict.get(label, Vertex(label))
                         children.append(v)
                         vertices_dict[v.label] = v
                         edges_to_children.append(Edge(vertex, v))
