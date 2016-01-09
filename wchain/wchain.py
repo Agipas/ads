@@ -41,6 +41,7 @@ class Vertex:
         self.outbound_edges = []
         self.max_depth = 0
         self.real = real
+        self.visited = False
 
     def get_sub_strings(self):
         string = self.label
@@ -165,6 +166,8 @@ class Graph:
 
             # Adding these neighbors to the queue, all at once.
             result.append(current_vertex.label)
+            for neighbor, _ in neighbors:
+                neighbor.visited= True
             queue.extend(neighbors)
         start_vertex.max_depth = max_depth
         self.computed_vertices.append(start_vertex)
@@ -174,7 +177,7 @@ class Graph:
     def compute_for_all(self):
         number_of_visited = 0
         for v in self.vertices:
-            if v.real:
+            if v.real and not v.visited:
                 max_depth, num_visited = self.bfs(v)
                 number_of_visited += num_visited
 
