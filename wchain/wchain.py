@@ -31,7 +31,7 @@ def write_result(path, result):
 def compute(path):
     data = Graph.from_file(path)
     res = data.compute_for_all()
-    return res + 1
+    return res
 
 
 class Vertex:
@@ -47,12 +47,12 @@ class Vertex:
         if len(string) <= 1:
             return set()
         char_list = list(string)
-        result = set()
+        result = list()
         for i, _ in enumerate(char_list):
             tmp = char_list[:]
             del tmp[i]
-            result.add("".join(tmp))
-        return result
+            result.append("".join(tmp))
+        return set(result)
 
     def __str__(self):
         return str(self.label)
@@ -84,7 +84,6 @@ class Graph:
         self.vertices = vertices
         self.edges = edges
         self.vertices_dict = vertices_dict
-        self.computed_vertices = []
 
     def __str__(self):
         res = ''
@@ -93,6 +92,7 @@ class Graph:
         return res
 
     @classmethod
+    @timeit
     def from_file(cls, path):
         with open(path, "r") as input_file:
 
@@ -114,9 +114,7 @@ class Graph:
                 if labels:
                     for label in labels:
                         v = vertices_dict.get(label)
-                        if v:
-                            v.real = True
-                        else:
+                        if not v:
                             v = Vertex(label)
                         children.append(v)
                         vertices_dict[v.label] = v
@@ -135,7 +133,7 @@ class Graph:
         # Initially, the queue contains only the start vertex
         # and all vertices are assumed to be not visited yet.
 
-        max_depth = 0
+        max_depth = 1
 
         queue = [(start_vertex, max_depth)]
 
@@ -160,22 +158,21 @@ class Graph:
             # this would be the place to do the sorting.
 
             # Adding these neighbors to the queue, all at once.
-            result.append(current_vertex.label)
+            result.append((current_vertex.label, max_depth))
             for neighbor, _ in neighbors:
-                neighbor.visited= True
+                neighbor.visited = True
             queue.extend(neighbors)
-        start_vertex.max_depth = max_depth
-        self.computed_vertices.append(start_vertex)
 
-        return max_depth, len(result)
+        return max_depth, result
 
     def compute_for_all(self):
         m = 0
-        number_of_visited = 0
         for v in self.vertices:
             if v.real and not v.visited:
-                max_depth, num_visited = self.bfs(v)
-                number_of_visited += num_visited
+                max_depth, path = self.bfs(v)
+                for w, i in path:
+                    if i > 4:
+                        print path
                 if max_depth > m:
                     m = max_depth
         return m
@@ -191,7 +188,7 @@ def main():
         pass
     path = "../problems/" + PROGRAM_NAME + '/testcases/'
     for _file in os.listdir(path):
-        if _file.endswith(".txt") or _file.endswith(".in"):
+        if _file.endswith(".in"):# or _file.endswith(".txt"):
             pprint('Reading file %s ....' % _file)
             input_path = os.path.abspath(os.path.join(path, _file))
             res = compute(input_path)
