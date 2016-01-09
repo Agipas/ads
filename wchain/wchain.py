@@ -1,11 +1,10 @@
 __author__ = 'vwvolodya'
 
-import heapq
-import string
 import random
 import time
 from pprint import pprint
 import os
+
 
 PROGRAM_NAME = 'wchain'
 
@@ -20,16 +19,6 @@ def timeit(method):
     return timed
 
 
-def read_file(path):
-    result = list()
-    with open(path) as f:
-        lines = int(f.readline())
-        while lines > 0:
-            result.append(f.readline().strip())
-            lines -= 1
-    return result
-
-
 def write_result(path, result):
     with open(path, 'w') as f:
         if isinstance(result, list):
@@ -40,22 +29,155 @@ def write_result(path, result):
 
 
 def compute(path):
-    data = read_file(path)
-    return data
+    data = Graph.from_file(path)
+    start = random.choice(data.vertices)
+    res = data.bfs(start)
+    return len(res)
+
+
+class Vertex:
+    def __init__(self, label, real=False):
+        self.label = label
+        self.outbound_edges = []
+        self.max_depth = 1
+        self.real = real
+
+    def get_sub_strings(self):
+        string = self.label
+        if len(string) <= 1:
+            return set()
+        char_list = list(string)
+        result = set()
+        for i, _ in enumerate(char_list):
+            tmp = char_list[:]
+            del tmp[i]
+            result.add("".join(tmp))
+        return result
+
+    def __str__(self):
+        return str(self.label)
+
+    def __repr__(self):
+        return "Label: %s  " % self.label
+
+    def __hash__(self):
+        return hash(self.label)
+
+    def __eq__(self, other):
+        return self.label == other.label
+
+    def __add__(self, other):
+        return self.label + other.label
+
+
+class Edge:
+    def __init__(self, start_vertex, end_vertex):
+        self.start_vertex = start_vertex
+        self.end_vertex = end_vertex
+
+    def __str__(self):
+        return "%s -> %s" % (self.start_vertex.label, self.end_vertex.label)
+
+
+class Graph:
+    def __init__(self, vertices, edges, vertices_dict):
+        self.vertices = vertices
+        self.edges = edges
+        self.vertices_dict = vertices_dict
+
+    def __str__(self):
+        res = ''
+        for el in self.edges:
+            res += str(el) + '\n'
+        return res
+
+    @classmethod
+    def from_file(cls, path):
+        with open(path, "r") as input_file:
+
+            vertices = list()
+            edges = list()
+            vertices_dict = dict()
+
+            num_strings = int(input_file.readline())
+            for i in xrange(num_strings):
+                next_string = input_file.readline().strip()
+                vertex = vertices_dict.get(next_string)
+                if vertex:
+                    vertex.real = True
+                else:
+                    vertex = Vertex(next_string, real=True)
+                labels = vertex.get_sub_strings()
+                children = list()
+                edges_to_children = list()
+                if labels:
+                    for label in labels:
+                        v = vertices_dict.get(label)
+                        if v:
+                            v.real = True
+                        else:
+                            v = Vertex(label)
+                        children.append(v)
+                        vertices_dict[v.label] = v
+                        edges_to_children.append(Edge(vertex, v))
+                vertex.outbound_edges.extend(edges_to_children)
+
+                vertices_dict[next_string] = vertex
+                vertices.append(vertex)
+                vertices.extend(children)
+
+        return cls(vertices, edges, vertices_dict)
+
+    def bfs(self, start_vertex):
+        result = []
+
+        # Initially, the queue contains only the start vertex
+        # and all vertices are assumed to be not visited yet.
+        queue = [start_vertex]
+        visited = {v.label: False for v in self.vertices}
+
+        while len(queue) > 0:
+            # Remove a vertex from the queue.
+            current_vertex = queue.pop(0)
+
+            # If we've already been here, ignoring this vertex completely.
+            # This condition can happen when, for example, this vertex was a neighbor of
+            # two other vertices and they both added it to the queue before it was visited.
+            if visited[current_vertex.label]:
+                continue
+
+            # Otherwise, marking it as visited so that we won't analyze it anymore.
+            visited[current_vertex.label] = True
+
+            # Getting all adjacent vertices which haven't been visited yet.
+            # It's only a matter of traversing the outbound_edges list and getting end_vertex for each.
+            neighbors = [edge.end_vertex
+                         for edge in current_vertex.outbound_edges
+                         if not visited[edge.end_vertex.label]]
+
+            # If we need to enforce a particular ordering on the neighbors we visit,
+            # e.g., visit them in the order of increasing labels (1, 4, 6; not 4, 6, 1),
+            # this would be the place to do the sorting.
+
+            # Adding these neighbors to the queue, all at once.
+            result.append(current_vertex.label)
+            queue.extend(neighbors)
+
+        return result
 
 
 def main():
     try:
         res = compute(PROGRAM_NAME + '.in')
         write_result(PROGRAM_NAME + '.out', res)
-        print "Got production file"
+        pprint("Got production file")
         return
     except (IOError, OSError):
         pass
     path = "../problems/" + PROGRAM_NAME + '/testcases/'
     for _file in os.listdir(path):
         if _file.endswith(".txt") or _file.endswith(".in"):
-            print 'Reading file %s ....' % _file
+            pprint('Reading file %s ....' % _file)
             input_path = os.path.abspath(os.path.join(path, _file))
             res = compute(input_path)
             pprint(res)
