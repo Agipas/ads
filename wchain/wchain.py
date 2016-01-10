@@ -225,13 +225,8 @@ def from_file(path):
 
             if labels:
                 for label in labels:
-                    n = words.get(label)
-                    if not n:
-                        n = Node(label)
-                        words[n.label] = n
-                    else:
-                        a = 4
-                        pass
+                    n = words.get(label, Node(label))
+                    words[n.label] = n
                     children.append(n)
             node.children = children
 
