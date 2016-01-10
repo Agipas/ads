@@ -214,14 +214,18 @@ def from_file(path):
             words[node.label] = node
             children = deque(list())
             # get all sub_strings
-            labels = deque(list())
-            char_list = list(node.label)
-            if len(char_list) > 1:
-                for i, _ in enumerate(char_list):
-                    tmp = char_list[:]
-                    del tmp[i]
-                    labels.append("".join(tmp))
-                labels = set(labels)
+            string = node.label
+            labels = dict()
+            if len(string) > 1:
+                for i in xrange(len(string)):
+                    substr = string[:i] + string[i+1:]
+                    labels[substr] = None
+                labels = labels.keys()
+            #
+            # In fact this solution is slower than the one above
+            # labels = set()
+            # if len(string) > 1:
+            #     labels = {string[:i] + string[i+1:] for i in xrange(len(string))}
 
             if labels:
                 for label in labels:
@@ -233,17 +237,26 @@ def from_file(path):
     return words
 
 
-def get_sstr(node):
-    labels = deque(list())
-    char_list = list(node.label)
-    if len(char_list) <= 1:
+def get_sstr(string):
+    labels = set()
+    if len(string) <= 1:
+        return labels
+    for i in range(len(string)):
+        tmp = string[:i] + string[i+1:]
+        labels.add(tmp)
+    return labels
+
+
+def get_sub_strings(string):
+    if len(string) <= 1:
         return set()
+    char_list = list(string)
+    result = list()
     for i, _ in enumerate(char_list):
         tmp = char_list[:]
         del tmp[i]
-        labels.append("".join(tmp))
-    labels = set(labels)
-    return labels
+        result.append("".join(tmp))
+    return set(result)
 
 
 def main():
@@ -265,4 +278,12 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # print( get_sstr('hello'))
+    # print( get_sub_strings('hello'))
+    # print( get_sstr('asdfgh'))
+    # print( get_sub_strings('asdfgh'))
+    # print( get_sstr('aaa'))
+    # print( get_sub_strings('aaa'))
+    # print( get_sstr('hsofghseouitgoseirtgsg'))
+    # print( get_sub_strings('hsofghseouitgoseirtgsg'))
 
