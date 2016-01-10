@@ -4,6 +4,7 @@ import random
 import time
 from pprint import pprint
 import os
+from collections import deque
 
 
 PROGRAM_NAME = 'wchain'
@@ -29,15 +30,22 @@ def write_result(path, result):
 
 
 def compute(path):
-    data = Graph.from_file(path)
-    res = data.compute_for_all()
+    # data = Graph.from_file(path)
+    # res = data.compute_for_all()
+    data = from_file(path)
+    res = 0
+    for word in data.itervalues():
+        if word.real and not word.visited:
+            max_depth = Node.search_max_depth(word)
+            if max_depth > res:
+                res = max_depth
     return res
 
 
 class Vertex:
     def __init__(self, label, real=False):
         self.label = label
-        self.outbound_edges = []
+        self.outbound_edges = deque([])
         self.max_depth = 0
         self.real = real
         self.visited = False
@@ -98,8 +106,8 @@ class Graph:
     def from_file(cls, path):
         with open(path, "r") as input_file:
 
-            vertices = list()
-            edges = list()
+            vertices = deque(list())
+            edges = deque(list())
             vertices_dict = dict()
 
             num_strings = int(input_file.readline())
@@ -108,8 +116,8 @@ class Graph:
                 vertex = vertices_dict.get(next_string, Vertex(next_string, real=True))
                 vertex.real = True
                 labels = vertex.get_sub_strings()
-                children = list()
-                edges_to_children = list()
+                children = deque(list())
+                edges_to_children = deque(list())
                 if labels:
                     for label in labels:
                         v = vertices_dict.get(label, Vertex(label))
@@ -132,11 +140,11 @@ class Graph:
 
         max_depth = 1
 
-        queue = [(start_vertex, max_depth)]
+        queue = deque([(start_vertex, max_depth)])
 
         while len(queue) > 0:
             # Remove a vertex from the queue.
-            current_vertex, max_depth = queue.pop(0)
+            current_vertex, max_depth = queue.popleft()
 
             # If we've already been here, ignoring this vertex completely.
             # This condition can happen when, for example, this vertex was a neighbor of
@@ -169,6 +177,78 @@ class Graph:
                 if max_depth > m:
                     m = max_depth
         return m
+
+
+class Node(object):
+    def __init__(self, label, real=False):
+        self.label = label
+        self.real = real
+        self.children = []
+        self.visited = False
+
+    @classmethod
+    def search_max_depth(cls, node):
+        max_depth = 1
+        queue = deque([(node, max_depth)])
+        while len(queue) > 0:
+            cur_node, max_depth = queue.popleft()
+            children = [(ch, max_depth + 1) for ch in cur_node.children if ch.real]
+            queue.extend(children)
+            for child, _ in children:
+                child.visited = True
+        return max_depth
+
+@timeit
+def from_file(path):
+    with open(path, "r") as input_file:
+
+        words = dict()  # {'label': node}
+
+        num_strings = int(input_file.readline())
+
+        for i in xrange(num_strings):
+            next_string = input_file.readline().strip()
+            node = words.get(next_string, Node(next_string, real=True))
+            node.real = True
+
+            words[node.label] = node
+            children = deque(list())
+            # get all sub_strings
+            labels = deque(list())
+            char_list = list(node.label)
+            if len(char_list) > 1:
+                for i, _ in enumerate(char_list):
+                    tmp = char_list[:]
+                    del tmp[i]
+                    labels.append("".join(tmp))
+                labels = set(labels)
+
+            if labels:
+                for label in labels:
+                    n = words.get(label)
+                    if not n:
+                        n = Node(label)
+                        words[n.label] = n
+                    else:
+                        a = 4
+                        pass
+                    children.append(n)
+            node.children = children
+
+    return words
+
+
+def get_sstr(node):
+    labels = deque(list())
+    char_list = list(node.label)
+    if len(char_list) <= 1:
+        return set()
+    for i, _ in enumerate(char_list):
+        tmp = char_list[:]
+        del tmp[i]
+        labels.append("".join(tmp))
+    labels = set(labels)
+    return labels
 
 
 def main():
