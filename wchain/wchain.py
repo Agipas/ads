@@ -198,7 +198,7 @@ class Node(object):
                 child.visited = True
         return max_depth
 
-@timeit
+
 def from_file(path):
     with open(path, "r") as input_file:
 
