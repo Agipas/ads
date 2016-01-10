@@ -183,7 +183,7 @@ class Node(object):
     def __init__(self, label, real=False):
         self.label = label
         self.real = real
-        self.children = []
+        self.children = None
         self.visited = False
 
     @classmethod
