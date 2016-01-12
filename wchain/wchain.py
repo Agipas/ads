@@ -35,38 +35,35 @@ def write_result(path, result):
 def compute(path):
     data = from_file(path)
     res = 0
+    visited = dict()
     for word in data.itervalues():
-        if word[REAL]:
-            if not word[VISITED]:
-                max_depth = search_max_depth(word)
-                if max_depth > res:
-                    res = max_depth
+        if word[LABEL] in visited:
+            continue
+        max_depth = 1
+        queue = deque([(word, max_depth)])
+        while len(queue) > 0:
+            cur_node, max_depth = queue.popleft()
+            children = [(ch, max_depth + 1) for ch in cur_node[CHILDREN] if ch[LABEL] in data]
+            queue.extend(children)
+            for child, _ in children:
+                visited[child[LABEL]] = None
+        if max_depth > res:
+            res = max_depth
     return res
-
-
-def search_max_depth(node):
-    max_depth = 1
-    queue = deque([(node, max_depth)])
-    while len(queue) > 0:
-        cur_node, max_depth = queue.popleft()
-        children = [(ch, max_depth + 1) for ch in cur_node[CHILDREN] if ch[REAL]]
-        queue.extend(children)
-        for child, _ in children:
-            child[VISITED] = True
-    return max_depth
 
 
 def from_file(path):
     with open(path, "r") as input_file:
         # node = {'l': next_string, 'r': False, 'v': False, "c":None}
         words = dict()  # {'label': node}
+        real_nodes = dict()
         num_strings = int(input_file.readline())
         for i in xrange(num_strings):
             next_string = input_file.readline().strip()
-            node = words.get(next_string, {'l': next_string, 'r': True, 'v': False, "c": None})
-            node[REAL] = True
+            node = words.get(next_string, {'l': next_string, "c": None})
 
             words[node[LABEL]] = node
+            real_nodes[node[LABEL]] = node
             children = list()
             # get all sub_strings
             string = node[LABEL]
@@ -74,13 +71,12 @@ def from_file(path):
             if len(string) > 1:
                 labels = {string[:i] + string[i+1:] for i in xrange(len(string))}
 
-            if labels:
-                for label in labels:
-                    n = words.get(label, {'l': label, 'r': False, 'v': False, "c":None})
-                    words[n[LABEL]] = n
-                    children.append(n)
+            for label in labels:
+                n = words.get(label, {'l': label, "c": None})
+                words[n[LABEL]] = n
+                children.append(n)
             node[CHILDREN] = children
-    return words
+    return real_nodes
 
 
 def main():
