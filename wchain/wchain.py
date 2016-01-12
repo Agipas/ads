@@ -7,10 +7,11 @@ from pprint import pprint
 
 PROGRAM_NAME = 'wchain'
 
-LABEL = 0
-REAL = 1
-VISITED = 2
-CHILDREN = 3
+LABEL = "l"
+REAL = "r"
+VISITED = "v"
+CHILDREN = "c"
+
 
 def timeit(method):
     def timed(*args, **kw):
@@ -62,7 +63,7 @@ def from_file(path):
         num_strings = int(input_file.readline())
         for i in xrange(num_strings):
             next_string = input_file.readline().strip()
-            node = words.get(next_string, [next_string, True, False, None])
+            node = words.get(next_string, {'l': next_string, 'r': True, 'v': False, "c": None})
             node[REAL] = True
 
             words[node[LABEL]] = node
@@ -75,7 +76,7 @@ def from_file(path):
 
             if labels:
                 for label in labels:
-                    n = words.get(label, [label, False, False, None])
+                    n = words.get(label, {'l': label, 'r': False, 'v': False, "c":None})
                     words[n[LABEL]] = n
                     children.append(n)
             node[CHILDREN] = children
